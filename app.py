@@ -34,6 +34,43 @@ from torch.autograd import Variable
 from PIL import Image
 import numpy as np
 
+cloud_model_location = "1h-oHkO3qs2tDCnMw8U4Poi9FRa15Savy"
+cloud_xml_location = "15e1nArJtsGqc2hGYU3h263jf2SvCcmC9"
+
+@st.cache
+def load_torchmodel():
+
+    save_dest = Path('models')
+    save_dest.mkdir(exist_ok=True)
+    
+    f_checkpoint = Path("models/model2850.pt")
+
+    if not f_checkpoint.exists():
+        with st.spinner("Downloading model... this may take awhile! \n Don't stop it!"):
+            from GD_download import download_file_from_google_drive
+            download_file_from_google_drive(cloud_model_location, f_checkpoint)
+    
+    model = torch.load(f_checkpoint, map_location=device)
+    model.eval()
+    return model
+
+@st.cache
+def load_facedetectmodel():
+
+    save_dest = Path('models')
+    save_dest.mkdir(exist_ok=True)
+    
+    f_checkpoint = Path("models/haarcascade_frontalface_default.xml")
+
+    if not f_checkpoint.exists():
+        with st.spinner("Downloading model... this may take awhile! \n Don't stop it!"):
+            from GD_download import download_file_from_google_drive
+            download_file_from_google_drive(cloud_xml_location, f_checkpoint)
+    
+    # model = torch.load(f_checkpoint, map_location=device)
+    # model.eval()
+    # return model
+
 def predict_image(image):
     image_tensor = p(image).float()
     image_tensor = image_tensor.unsqueeze_(0)
@@ -64,7 +101,8 @@ speech_detector = nn.Sequential(
     nn.LazyLinear(512),
     nn.LazyLinear(1)
 ).to(device)
-speech_detector.load_state_dict(torch.load("models/model2850.pt"))
+speech_detector.load_state_dict(load_torchmodel())
+load_facedetectmodel()
 faceCascade = cv2.CascadeClassifier("models/haarcascade_frontalface_default.xml")
 
 HERE = Path(__file__).parent
