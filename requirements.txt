@@ -10,3 +10,4 @@ streamlit_webrtc==0.29.1
 torch==1.9.1
 torchvision==0.10.1
 typing_extensions==3.10.0.2
+requests
