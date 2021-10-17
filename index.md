@@ -21,8 +21,6 @@ Syntax highlighted code block
 1. Numbered
 2. List
 
-video: https://youtube.com/embed/w3jLJU7DT5E
-
 **Bold** and _Italic_ and `Code` text
 
 [Link](url) and ![Image](src)
